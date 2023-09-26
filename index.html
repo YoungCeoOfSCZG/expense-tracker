@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <title>Expense Tracker</title>
+</head>
+
+
+<body>
+    <div class="iphone-wrap">
+        <div class="header-wrapper">
+            <div class="user">
+                <div class="img-container">
+                    <img src="https://iphoneswallpapers.com/wp-content/uploads/2023/04/Kitty-Anime-Girl-iPhone-Wallpaper-HD.jpg"
+                        alt="">
+                </div>
+                <div class="description">
+                    <p id="welcome">Welcome Back,</p>
+                    <p id="name">Violante T.</p>
+                </div>
+            </div>
+            <button id="btn-icon">
+                <img src="widget-svgrepo-com.svg" alt="icon layer" id="icon-layer">
+            </button>
+        </div>
+        <div class="saldo-container">
+            <h4>Totale Spese</h4>
+            <div id="saldo">€...</div>
+        </div>
+        <div class="main-container">
+            <label for="addItem">Cosa vuoi Aggiungere?</label>
+            <input type="text" id="addItem">
+            <p id='errorItem' class="error"></p>
+            <br>
+            <label for="prezzo">Quanto è costato?</label>
+            <input type="text" id="prezzo" placeholder="€">
+            <p id="errorImporto" class="error"></p>
+            <br>
+            <button id="btn">Calcola</button>
+        </div>
+        <div id="resultContainer">I tuoi prodotti</div>
+    </div>
+
+
+    <script>
+        const addItem = document.getElementById('addItem')
+        const addPrezzo = document.getElementById('prezzo')
+        const btn = document.getElementById('btn')
+        const resultContainer = document.getElementById('resultContainer')
+        const saldoTotale = document.getElementById('saldo')
+
+        let spese = [] //creiamo un array vuoto
+
+        //evento al click che cattura i valori dei 2 input
+        btn.addEventListener('click', () => {
+            const descrizione = addItem.value
+            const importo = parseFloat(addPrezzo.value)
+
+            // Validazione della descrizione (deve essere una stringa e non un numero)
+            if (!isNaN(descrizione) || typeof descrizione !== 'string') {
+                const errorItem = document.getElementById('errorItem')
+                errorItem.textContent = 'Inserisci un valore valido'
+                // Esci dalla funzione se la descrizione non è valida
+                return
+            }
+            
+            // Rimuovi il messaggio di errore per la descrizione se è valida
+            errorItem.textContent = ''
+            
+            // Validazione dell'importo (deve essere un numero valido)
+            if (isNaN(importo) || importo <= 0) {
+                const errorImporto = document.getElementById('errorImporto')
+                errorImporto.textContent = 'Inserisci un valore valido'
+                // Esci dalla funzione se l'importo non è valido
+                return
+            }
+            // Rimuovi il messaggio di errore per l'importo se è valido
+            errorImporto.textContent = ''
+
+
+            //creaiamo un oggetto con 2 chiavi senza valori perche dinamici
+            const spesa = {
+                descrizione,
+                importo
+            }
+
+            //inseriamo il valore dell oggetto nell array crato prima
+            spese.push(spesa)
+
+            //richiamiamo la funzione che andremo a creare per 
+            //far apparire gli oggetti nel DOM ed eseguire i calcoli
+            aggiornaInterfacciaUtente()
+        })
+
+        
+        //creazione della funzione
+        const aggiornaInterfacciaUtente = () => {
+            resultContainer.innerHTML = '' //per pulire il div e non far ripetere un item
+            let totale = 0 //variabile che simula il totale a 0
+
+
+            //iteriamo l array per ogni oggetto 
+            spese.forEach((spesa) => {
+                //creaiamo un div per mostrare gli item e l importo
+                const speseDiv = document.createElement('div')
+                //gli innestiamo le 2 key dell oggetto
+                speseDiv.innerHTML = `${spesa.descrizione} ${spesa.importo}€`
+                //lo appendiamo al div gia creato per mostrare il risultato
+                resultContainer.appendChild(speseDiv)
+                //aggiungiamo alla variabile prima 0 la chiave spesa con il valore importo
+                totale += spesa.importo
+                //impostiamo gli input a vuoti
+                addItem.value = ''
+                addPrezzo.value = ''
+            })
+            //al div id saldo in alto aggiungiamo il testo con la variabile totale
+            //cosi da mostrare l importo speso in totale
+            saldoTotale.textContent = `€ ${totale}`
+        }
+
+
+
+
+
+
+
+
+
+
+    </script>
+</body>
+
+</html>
